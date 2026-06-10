@@ -1,15 +1,26 @@
-# Build stage
-FROM node:20-alpine AS build
+# here Base Image
+FROM node:20-alpine
+
+# Working Directory
 WORKDIR /app
+
+# Copy files
 COPY package*.json ./
+
+# Install dependencies
 RUN npm ci
+
+# Copy files to the working directory
 COPY . .
+
+# build the project
 RUN npm run build
 
-# Production stage
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-# Add nginx configuration if needed
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Install 'serve' package globally to serve the built files
+RUN npm install -g serve
+
+# Exposing the port
+EXPOSE 5173
+
+# Starting the app
+CMD ["serve", "-s", "dist", "-l", "5173"]
