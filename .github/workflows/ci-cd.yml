@@ -28,7 +28,7 @@ jobs:
         run: npm ci
 
       - name: Run Unit Tests with Coverage
-        run: npm test -- --coverage --run
+        run: npm install @vitest/coverage-v8@1.6.1 --legacy-peer-deps && npm test -- --coverage --run
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
@@ -96,13 +96,13 @@ jobs:
           image-ref: reactjs-harshan:latest
           format: table
           output: trivy-results.txt
-          exit-code: '1'              # Fails pipeline if CRITICAL found
+          exit-code: '1'
           severity: CRITICAL,HIGH
           ignore-unfixed: true
 
       - name: Upload Trivy Report
         uses: actions/upload-artifact@v4
-        if: always()                  # Upload report even if scan fails
+        if: always()
         with:
           name: trivy-report
           path: trivy-results.txt
